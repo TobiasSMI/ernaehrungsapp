@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Tagesprotokoll</title>
+  <link href="https://fonts.googleapis.com/css?family=Inter:400,500,700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #4976cf;
+      --secondary: #eaf0fa;
+      --accent: #ffd660;
+      --muted: #f6f8fc;
+      --success: #50cc7f;
+      --warning: #ffd660;
+      --danger: #ff5e62;
+    }
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--muted);
+      margin: 0; padding: 0;
+      min-height: 100vh;
+    }
+    header {
+      color: #fff; background: var(--primary);
+      text-align: center; padding: 24px 0 18px; border-radius: 0 0 24px 24px;
+    }
+    h1 { margin: 0; font-weight: 700; font-size: 1.6em;}
+    form {
+      background: #fff;
+      margin: 24px auto 16px auto;
+      border-radius: 20px;
+      box-shadow: 0 3px 18px #22327314;
+      max-width: 430px;
+      padding: 21px 18px 24px 18px;
+    }
+    fieldset { border: none; margin: 0 0 22px 0; padding: 0;}
+    legend { font-weight: 700; color: var(--primary); margin-bottom: 7px; font-size: 1.07em;}
+    label, .input-label { font-weight: 500; display: block; margin-bottom: 7px; color: #223273;}
+    .row { display: flex; gap: 10px; align-items: center;}
+    .inline-checkbox {display:flex;gap:12px;}
+    .checkbox-row {
+      display: flex; gap: 20px; align-items: center;
+      justify-content: flex-start;
+      margin-bottom: 14px;
+    }
+    .checkbox-wrapper {
+      display: flex; align-items: center; gap: 6px;
+      font-weight: 500;
+      background: var(--secondary);
+      padding: 7px 13px;
+      border-radius: 12px;
+    }
+    input[type="date"], input[type="text"] {
+      background: var(--muted); border: 1.3px solid var(--secondary); border-radius:9px; padding:9px 7px;
+      font-size:1.03em; width:100%; margin-bottom:13px;
+    }
+    .category-block {
+      background: var(--secondary);
+      border-radius: 14px;
+      padding: 12px 10px 10px 10px;
+      margin-bottom: 17px;
+      box-shadow:0 1px 7px #2232730a;
+    }
+    .portion-btn-group {
+      display: flex; gap: 7px; margin-bottom: 11px;
+    }
+    .portion-btn {
+      flex: 1; padding: 7px 0; font-size:1em; font-weight: 500;
+      border: 1.5px solid var(--primary); background: #fff; color:var(--primary);
+      border-radius:13px; cursor:pointer; transition:.18s;
+    }
+    .portion-btn.selected, .portion-btn:focus {
+      background: var(--primary); color: #fff;
+    }
+    .ampel-row {
+      display: flex; gap:12px; align-items:center; margin-bottom:6px;
+    }
+    .ampel-btn {
+      width: 34px; height: 34px;
+      border-radius: 50%; border: 2.3px solid #eee;
+      background: #eee; color: #fff; font-size: 1.32em; cursor:pointer;
+      transition:.16s;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .ampel-btn.gruen.selected { background: var(--success); border-color: var(--success);}
+    .ampel-btn.gelb.selected { background: var(--warning); color:#444;border-color: var(--warning);}
+    .ampel-btn.rot.selected { background: var(--danger); border-color: var(--danger);}
+    .ampel-btn:focus { outline: 2px solid var(--primary);}
+    button[type="submit"] {
+      width: 100%; padding: 14px 0; font-size: 1.1em; color: #fff;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      border: none; border-radius: 10px; margin-top: 25px;font-weight: 700;
+      letter-spacing: .05em; box-shadow: 0 2px 7px #0001; cursor:pointer;
+      transition: background .14s;
+    }
+  </style>
+  <script>
+    // Portionen-Buttons als Einzelwahl umsetzen
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('.portion-btn-group').forEach(group => {
+        group.addEventListener('click', e => {
+          if (e.target.classList.contains('portion-btn')) {
+            [...group.querySelectorAll('.portion-btn')].forEach(btn => btn.classList.remove('selected'));
+            e.target.classList.add('selected');
+            let hidden = group.querySelector('input[type=hidden]');
+            if(hidden) hidden.value = e.target.getAttribute("data-value");
+          }
+        });
+      });
+      // Ampel
+      document.querySelectorAll('.ampel-row').forEach(group => {
+        group.addEventListener('click', e => {
+          if (e.target.classList.contains('ampel-btn')) {
+            [...group.querySelectorAll('.ampel-btn')].forEach(btn => btn.classList.remove('selected'));
+            e.target.classList.add('selected');
+            let hidden = group.querySelector('input[type=hidden]');
+            if(hidden) hidden.value = e.target.getAttribute("data-value");
+          }
+        });
+      });
+      // Datum heute vorbelegen
+      let dt = new Date();
+      let s = dt.toISOString().slice(0,10);
+      document.querySelector('input[type=date]').value = s;
+    });
+  </script>
+</head>
+<body>
+<header>
+  <h1>📝 Tagesprotokoll</h1>
+</header>
+<form method="post">
+  <div class="row" style="margin-bottom:14px;">
+    <label style="flex:2;">Datum
+      <input type="date" name="date" required>
+    </label>
+    <div class="checkbox-row" style="flex:3;">
+      <div class="checkbox-wrapper">
+        <input type="checkbox" name="workday" value="1" id="workday">
+        <label for="workday">Arbeitstag</label>
+      </div>
+      <div class="checkbox-wrapper">
+        <input type="checkbox" name="cheat_day" value="1" id="cheat_day">
+        <label for="cheat_day">Cheat Day</label>
+      </div>
+      <div class="checkbox-wrapper">
+        <input type="checkbox" name="sport" value="1" id="sport">
+        <label for="sport">Sport gemacht</label>
+      </div>
+    </div>
+  </div>
+  <label>Gewicht (kg)
+    <input type="number" name="weight_kg" step="0.1" inputmode="decimal">
+  </label>
+
+  <!-- Mahlzeitenblöcke -->
+  <fieldset class="category-block">
+    <legend>Was habe ich heute gefrühstückt?</legend>
+    <input type="text" name="breakfast_food" placeholder="z.B. Brot mit Ei und Kräutern">
+    <div class="portion-btn-group" style="margin-bottom:9px;">
+      <input type="hidden" name="breakfast_portion">
+      <button type="button" class="portion-btn" data-value="viel">Viel</button>
+      <button type="button" class="portion-btn" data-value="mittel">Mittel</button>
+      <button type="button" class="portion-btn" data-value="wenig">Kleine Portion</button>
+    </div>
+    <div class="ampel-row">
+      <input type="hidden" name="breakfast_ampel">
+      <button type="button" class="ampel-btn gruen" data-value="gruen" title="Gute Mahlzeit">🟢</button>
+      <button type="button" class="ampel-btn gelb"  data-value="gelb"  title="Durchschnittlich">🟡</button>
+      <button type="button" class="ampel-btn rot"   data-value="rot"   title="Schlecht">🔴</button>
+    </div>
+  </fieldset>
+
+  <fieldset class="category-block">
+    <legend>Was habe ich heute zum Mittag gegessen?</legend>
+    <input type="text" name="lunch_food" placeholder="z.B. Gemüsepfanne mit Reis">
+    <div class="portion-btn-group">
+      <input type="hidden" name="lunch_portion">
+      <button type="button" class="portion-btn" data-value="viel">Viel</button>
+      <button type="button" class="portion-btn" data-value="mittel">Mittel</button>
+      <button type="button" class="portion-btn" data-value="wenig">Kleine Portion</button>
+    </div>
+    <div class="ampel-row">
+      <input type="hidden" name="lunch_ampel">
+      <button type="button" class="ampel-btn gruen" data-value="gruen" title="Gute Mahlzeit">🟢</button>
+      <button type="button" class="ampel-btn gelb"  data-value="gelb"  title="Durchschnittlich">🟡</button>
+      <button type="button" class="ampel-btn rot"   data-value="rot"   title="Schlecht">🔴</button>
+    </div>
+  </fieldset>
+
+  <fieldset class="category-block">
+    <legend>Was habe ich heute zum Abend gegessen?</legend>
+    <input type="text" name="dinner_food" placeholder="z.B. Salat mit Pute">
+    <div class="portion-btn-group">
+      <input type="hidden" name="dinner_portion">
+      <button type="button" class="portion-btn" data-value="viel">Viel</button>
+      <button type="button" class="portion-btn" data-value="mittel">Mittel</button>
+      <button type="button" class="portion-btn" data-value="wenig">Kleine Portion</button>
+    </div>
+    <div class="ampel-row">
+      <input type="hidden" name="dinner_ampel">
+      <button type="button" class="ampel-btn gruen" data-value="gruen" title="Gute Mahlzeit">🟢</button>
+      <button type="button" class="ampel-btn gelb"  data-value="gelb"  title="Durchschnittlich">🟡</button>
+      <button type="button" class="ampel-btn rot"   data-value="rot"   title="Schlecht">🔴</button>
+    </div>
+  </fieldset>
+
+  <fieldset class="category-block">
+    <legend>Was habe ich heute gesnackt?</legend>
+    <input type="text" name="snack_food" placeholder="z.B. Fruchtjoghurt mit Nüssen">
+    <div class="portion-btn-group">
+      <input type="hidden" name="snack_portion">
+      <button type="button" class="portion-btn" data-value="viel">Viel</button>
+      <button type="button" class="portion-btn" data-value="mittel">Mittel</button>
+      <button type="button" class="portion-btn" data-value="wenig">Kleine Portion</button>
+    </div>
+    <div class="ampel-row">
+      <input type="hidden" name="snack_ampel">
+      <button type="button" class="ampel-btn gruen" data-value="gruen" title="Gute Mahlzeit">🟢</button>
+      <button type="button" class="ampel-btn gelb"  data-value="gelb"  title="Durchschnittlich">🟡</button>
+      <button type="button" class="ampel-btn rot"   data-value="rot"   title="Schlecht">🔴</button>
+    </div>
+  </fieldset>
+
+  <fieldset class="category-block">
+    <legend>Was habe ich heute getrunken?</legend>
+    <input type="text" name="drink_food" placeholder="z.B. Wasser, Apfelschorle, Kaffee">
+    <div class="portion-btn-group">
+      <input type="hidden" name="drink_portion">
+      <button type="button" class="portion-btn" data-value="viel">Viel</button>
+      <button type="button" class="portion-btn" data-value="mittel">Mittel</button>
+      <button type="button" class="portion-btn" data-value="wenig">Kleine Portion</button>
+    </div>
+    <div class="ampel-row">
+      <input type="hidden" name="drink_ampel">
+      <button type="button" class="ampel-btn gruen" data-value="gruen" title="Gutes Getränk">🟢</button>
+      <button type="button" class="ampel-btn gelb"  data-value="gelb"  title="Durchschnittlich">🟡</button>
+      <button type="button" class="ampel-btn rot"   data-value="rot"   title="Schlecht">🔴</button>
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <label>Mein Gesamtgefühl heute</label>
+    <div class="ampel-row">
+      <input type="hidden" name="mood">
+      <button type="button" class="ampel-btn gruen" data-value="gruen" title="Super!">😃</button>
+      <button type="button" class="ampel-btn gelb"  data-value="gelb" title="Okay">😐</button>
+      <button type="button" class="ampel-btn rot"   data-value="rot" title="Schlecht">😞</button>
+    </div>
+    <label>So habe ich geschlafen</label>
+    <div class="ampel-row">
+      <input type="hidden" name="sleep">
+      <button type="button" class="ampel-btn gruen" data-value="gruen" title="Erholt">😴</button>
+      <button type="button" class="ampel-btn gelb"  data-value="gelb" title="Na ja">😑</button>
+      <button type="button" class="ampel-btn rot"   data-value="rot" title="Schlecht">😩</button>
+    </div>
+  </fieldset>
+  <fieldset class="inline-checkbox">
+    <label><input type="checkbox" name="breath_ex" value="1">Atemübung</label>
+    <label><input type="checkbox" name="ab_massage" value="1">Bauchmassage</label>
+    <label><input type="checkbox" name="gratitude" value="1">Dankbarkeit</label>
+  </fieldset>
+  <label>Notizen
+    <textarea name="notes" rows="2" placeholder="Freitext, Beobachtungen, Sonstiges"></textarea>
+  </label>
+  <button type="submit">🌟 Speichern</button>
+</form>
+</body>
+</html>
