@@ -1,269 +1,421 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="de">
-<head>
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Tagesprotokoll</title>
-  <link href="https://fonts.googleapis.com/css?family=Inter:400,500,700&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --primary: #4976cf;
-      --secondary: #eaf0fa;
-      --accent: #ffd660;
-      --muted: #f6f8fc;
-      --success: #50cc7f;
-      --warning: #ffd660;
-      --danger: #ff5e62;
-    }
-    body {
-      font-family: 'Inter', system-ui, sans-serif;
-      background: var(--muted);
-      margin: 0; padding: 0;
-      min-height: 100vh;
-    }
-    header {
-      color: #fff; background: var(--primary);
-      text-align: center; padding: 24px 0 18px; border-radius: 0 0 24px 24px;
-    }
-    h1 { margin: 0; font-weight: 700; font-size: 1.6em;}
-    form {
-      background: #fff;
-      margin: 24px auto 16px auto;
-      border-radius: 20px;
-      box-shadow: 0 3px 18px #22327314;
-      max-width: 430px;
-      padding: 21px 18px 24px 18px;
-    }
-    fieldset { border: none; margin: 0 0 22px 0; padding: 0;}
-    legend { font-weight: 700; color: var(--primary); margin-bottom: 7px; font-size: 1.07em;}
-    label, .input-label { font-weight: 500; display: block; margin-bottom: 7px; color: #223273;}
-    .row { display: flex; gap: 10px; align-items: center;}
-    .inline-checkbox {display:flex;gap:12px;}
-    .checkbox-row {
-      display: flex; gap: 20px; align-items: center;
-      justify-content: flex-start;
-      margin-bottom: 14px;
-    }
-    .checkbox-wrapper {
-      display: flex; align-items: center; gap: 6px;
-      font-weight: 500;
-      background: var(--secondary);
-      padding: 7px 13px;
-      border-radius: 12px;
-    }
-    input[type="date"], input[type="text"] {
-      background: var(--muted); border: 1.3px solid var(--secondary); border-radius:9px; padding:9px 7px;
-      font-size:1.03em; width:100%; margin-bottom:13px;
-    }
-    .category-block {
-      background: var(--secondary);
-      border-radius: 14px;
-      padding: 12px 10px 10px 10px;
-      margin-bottom: 17px;
-      box-shadow:0 1px 7px #2232730a;
-    }
-    .portion-btn-group {
-      display: flex; gap: 7px; margin-bottom: 11px;
-    }
-    .portion-btn {
-      flex: 1; padding: 7px 0; font-size:1em; font-weight: 500;
-      border: 1.5px solid var(--primary); background: #fff; color:var(--primary);
-      border-radius:13px; cursor:pointer; transition:.18s;
-    }
-    .portion-btn.selected, .portion-btn:focus {
-      background: var(--primary); color: #fff;
-    }
-    .ampel-row {
-      display: flex; gap:12px; align-items:center; margin-bottom:6px;
-    }
-    .ampel-btn {
-      width: 34px; height: 34px;
-      border-radius: 50%; border: 2.3px solid #eee;
-      background: #eee; color: #fff; font-size: 1.32em; cursor:pointer;
-      transition:.16s;
-      display: flex; align-items: center; justify-content: center;
-    }
-    .ampel-btn.gruen.selected { background: var(--success); border-color: var(--success);}
-    .ampel-btn.gelb.selected { background: var(--warning); color:#444;border-color: var(--warning);}
-    .ampel-btn.rot.selected { background: var(--danger); border-color: var(--danger);}
-    .ampel-btn:focus { outline: 2px solid var(--primary);}
-    button[type="submit"] {
-      width: 100%; padding: 14px 0; font-size: 1.1em; color: #fff;
-      background: linear-gradient(90deg, var(--primary), var(--accent));
-      border: none; border-radius: 10px; margin-top: 25px;font-weight: 700;
-      letter-spacing: .05em; box-shadow: 0 2px 7px #0001; cursor:pointer;
-      transition: background .14s;
-    }
-  </style>
-  <script>
-    // Portionen-Buttons als Einzelwahl umsetzen
-    document.addEventListener('DOMContentLoaded', () => {
-      document.querySelectorAll('.portion-btn-group').forEach(group => {
-        group.addEventListener('click', e => {
-          if (e.target.classList.contains('portion-btn')) {
-            [...group.querySelectorAll('.portion-btn')].forEach(btn => btn.classList.remove('selected'));
-            e.target.classList.add('selected');
-            let hidden = group.querySelector('input[type=hidden]');
-            if(hidden) hidden.value = e.target.getAttribute("data-value");
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tagesprotokoll</title>
+    <style>
+      .switch {
+        position: relative;
+        display: inline-block;
+        width: 47px;
+        height: 28px;
+      }
+      .switch input {
+        display: none;
+      }
+      .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #eaf0fa;
+        transition: 0.4s;
+        border-radius: 28px;
+        box-shadow: 0 1px 6px #22327315;
+      }
+      .slider:before {
+        content: "";
+        position: absolute;
+        height: 22px;
+        width: 22px;
+        left: 3px;
+        bottom: 3px;
+        background-color: #dffbf5;
+        transition: 0.4s;
+        border-radius: 50%;
+        box-shadow: 0 2px 6px #0001;
+      }
+      input:checked + .slider {
+        background-color: #50cc7f;
+      }
+      input:checked + .slider:before {
+        transform: translateX(19px);
+        background: #4976cf;
+      }
+
+      .container {
+        max-width: 480px;
+        margin: 20px auto;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f8f9fa;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+      .group {
+        background: #f5f8fe;
+        border-radius: 13px;
+        padding: 14px 12px;
+        box-shadow: 0 0.5px 3px #22327312;
+        margin-bottom: 14px;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: end;
+        gap: 12px;
+      }
+      .col {
+        flex: 1 1 120px;
+        min-width: 120px;
+      }
+      .status {
+        background: #eaf0fa;
+        border-radius: 12px;
+        padding: 10px 8px;
+        margin-bottom: 18px;
+        display: flex;
+        gap: 14px;
+        justify-content: space-around;
+        align-items: center;
+        box-shadow: 0 0.5px 3px #22327311;
+      }
+      .status .box {
+        text-align: center;
+      }
+      .status .box span {
+        display: block;
+        font-size: 0.97em;
+        margin-bottom: 6px;
+        color: #37517e;
+      }
+
+      section {
+        background-color: white;
+        padding: 15px 20px;
+        border-radius: 10px;
+        margin-bottom: 15px;
+        box-shadow: 0 1px 6px #22327310;
+      }
+      label {
+        display: block;
+        margin-top: 10px;
+        font-weight: 600;
+        color: #37517e;
+      }
+      input[type="text"],
+      input[type="number"],
+      input[type="date"],
+      select {
+        width: 100%;
+        padding: 10px 9px;
+        margin-top: 6px;
+        border-radius: 8px;
+        border: 1.2px solid #ccd6f6;
+        background: #f8fafd;
+        font-size: 1.06em;
+        box-sizing: border-box;
+      }
+
+      input[type="range"] {
+        width: 100%;
+        -webkit-appearance: none;
+        height: 18px;
+        border-radius: 12px;
+        background: linear-gradient(
+          to right,
+          #50cc7f 0%,
+          #50cc7f 30%,
+          #ffd660 31%,
+          #ffd660 79%,
+          #ff5e62 80%,
+          #ff5e62 100%
+        );
+        outline: none;
+        position: relative;
+        z-index: 2;
+      }
+      input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        height: 32px;
+        width: 32px;
+        border-radius: 50%;
+        background: #4976cf;
+        cursor: pointer;
+        transition: background 0.14s, scale 0.1s;
+        border: 3px solid #fff;
+        margin-top: -8px;
+        box-shadow: 0 2.5px 9px #0002;
+      }
+      input[type="range"]:focus::-webkit-slider-thumb {
+        background: #ffd660;
+      }
+      input[type="range"].danger::-webkit-slider-thumb {
+        background: #ff5e62;
+      }
+      input[type="range"]::-moz-range-thumb {
+        height: 32px;
+        width: 32px;
+        border-radius: 50%;
+        background: #4976cf;
+        cursor: pointer;
+        border: 3px solid #fff;
+      }
+
+      .portion {
+        margin: 18px 0 13px 0;
+      }
+      .portion .label {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 4px;
+      }
+      .portion .label div:last-child {
+        font-weight: 700;
+        color: #4976cf;
+      }
+      .portion .label .danger {
+        color: #ff5e62;
+      }
+      .ticks {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.9em;
+        color: #37517e99;
+        margin-top: 8px;
+      }
+
+      .reflect,
+      .health {
+        border-radius: 11px;
+        padding: 11px 8px 8px;
+        margin-top: 12px;
+      }
+      .reflect {
+        background: #eaf6e9;
+        border-left: 5px solid #50cc7f;
+      }
+      .health {
+        background: #fff5e0;
+        border-left: 5px solid #ffd660;
+      }
+      .q {
+        font-weight: 700;
+        margin-bottom: 8px;
+        color: #223273;
+      }
+      .lights {
+        display: flex;
+        gap: 13px;
+        align-items: center;
+        margin: 11px 0 9px 0;
+      }
+      .lamp {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        border: 2.5px solid #eee;
+        background: #eee;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 1.25em;
+        cursor: pointer;
+        box-shadow: 0 2px 7px #0002;
+        transition: all 0.13s;
+      }
+      .lamp.sel.green {
+        background: #50cc7f;
+        border-color: #50cc7f;
+      }
+      .lamp.sel.yellow {
+        background: #ffd660;
+        border-color: #ffd660;
+        color: #333;
+      }
+      .lamp.sel.red {
+        background: #ff5e62;
+        border-color: #ff5e62;
+      }
+
+      button[type="submit"] {
+        width: 100%;
+        padding: 15px 0;
+        font-size: 1.1em;
+        color: #fff;
+        background: linear-gradient(90deg, #4976cf, #ffd660);
+        border: none;
+        border-radius: 10px;
+        margin-top: 25px;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        box-shadow: 0 2px 7px #0001;
+        cursor: pointer;
+        transition: background 0.14s;
+      }
+      button[type="submit"]:hover {
+        background: linear-gradient(90deg, #3a61ad, #ddb742);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header><h1>📝 Tagesprotokoll</h1></header>
+      <form method="post" action="/daily">
+        <div class="group">
+          <div class="col">
+            <label for="name">👤 Name</label>
+            <select id="name" name="name" required>
+              <option value="">Bitte wählen…</option>
+              <option value="Tobias">Tobias</option>
+              <option value="Max">Max</option>
+              <option value="Felix">Felix</option>
+            </select>
+          </div>
+          <div class="col">
+            <label for="today">📅 Datum</label>
+            <input type="date" id="today" name="date" required />
+          </div>
+          <div class="col">
+            <label for="weight_kg">⚖️ Gewicht (kg)</label>
+            <input
+              type="number"
+              id="weight_kg"
+              name="weight_kg"
+              step="0.1"
+              inputmode="decimal"
+            />
+          </div>
+        </div>
+
+        <div class="status">
+          <div class="box">
+            <span>Arbeitstag</span>
+            <label class="switch">
+              <input type="checkbox" name="workday" id="workday" />
+              <span class="slider"></span>
+            </label>
+          </div>
+          <div class="box">
+            <span>Cheat Day</span>
+            <label class="switch">
+              <input type="checkbox" name="cheat_day" id="cheat_day" />
+              <span class="slider"></span>
+            </label>
+          </div>
+          <div class="box">
+            <span>Sport gemacht</span>
+            <label class="switch">
+              <input type="checkbox" name="sport" id="sport" />
+              <span class="slider"></span>
+            </label>
+          </div>
+        </div>
+
+        <section>
+          <legend>Was habe ich heute gefrühstückt?</legend>
+          <input
+            type="text"
+            name="breakfast_food"
+            placeholder="z.B. Brot mit Ei und Kräutern"
+          />
+          <div class="portion">
+            <div class="label">
+              <div>Portionsgröße</div>
+              <div id="b_portion_text">kleine Portion</div>
+            </div>
+            <input
+              type="range"
+              min="0"
+              max="100"
+              value="30"
+              id="b_portion"
+              name="breakfast_portion"
+            />
+            <div class="ticks">
+              <span>KLEIN</span><span>MITTEL</span><span>VIEL</span>
+            </div>
+          </div>
+          <div class="reflect">
+            <div class="q">Wie gut tat mir diese Mahlzeit?</div>
+            <div class="lights" id="b_reflect_group">
+              <input
+                type="hidden"
+                name="breakfast_reflection"
+                id="b_reflect_val"
+              />
+              <div class="lamp green" data-val="green">🟢</div>
+              <div class="lamp yellow" data-val="yellow">🟡</div>
+              <div class="lamp red" data-val="red">🔴</div>
+            </div>
+          </div>
+          <div class="health">
+            <div class="q">Wie gesund war diese Mahlzeit?</div>
+            <div class="lights" id="b_health_group">
+              <input type="hidden" name="breakfast_health" id="b_health_val" />
+              <div class="lamp green" data-val="green">🟢</div>
+              <div class="lamp yellow" data-val="yellow">🟡</div>
+              <div class="lamp red" data-val="red">🔴</div>
+            </div>
+          </div>
+        </section>
+
+        <button type="submit">🌟 Speichern</button>
+      </form>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const d = document.getElementById("today");
+        if (d && !d.value) d.value = new Date().toISOString().slice(0, 10);
+
+        const slider = document.getElementById("b_portion");
+        const label = document.getElementById("b_portion_text");
+        function updatePortion() {
+          const v = +slider.value;
+          if (v < 33) {
+            label.textContent = "kleine Portion";
+            slider.classList.remove("danger");
+            label.classList.remove("danger");
+          } else if (v < 80) {
+            label.textContent = "mittlere Portion";
+            slider.classList.remove("danger");
+            label.classList.remove("danger");
+          } else {
+            label.textContent = "zu viel 😬";
+            slider.classList.add("danger");
+            label.classList.add("danger");
           }
-        });
+        }
+        slider.addEventListener("input", updatePortion);
+        updatePortion();
+
+        function setupLights(groupId, hiddenId) {
+          const g = document.getElementById(groupId);
+          const out = document.getElementById(hiddenId);
+          g.querySelectorAll(".lamp").forEach((el) => {
+            el.addEventListener("click", () => {
+              g.querySelectorAll(".lamp").forEach((x) =>
+                x.classList.remove("sel")
+              );
+              el.classList.add(
+                "sel",
+                el.classList.contains("green")
+                  ? "green"
+                  : el.classList.contains("yellow")
+                  ? "yellow"
+                  : "red"
+              );
+              out.value = el.dataset.val;
+            });
+          });
+        }
+        setupLights("b_reflect_group", "b_reflect_val");
+        setupLights("b_health_group", "b_health_val");
       });
-      // Ampel
-      document.querySelectorAll('.ampel-row').forEach(group => {
-        group.addEventListener('click', e => {
-          if (e.target.classList.contains('ampel-btn')) {
-            [...group.querySelectorAll('.ampel-btn')].forEach(btn => btn.classList.remove('selected'));
-            e.target.classList.add('selected');
-            let hidden = group.querySelector('input[type=hidden]');
-            if(hidden) hidden.value = e.target.getAttribute("data-value");
-          }
-        });
-      });
-      // Datum heute vorbelegen
-      let dt = new Date();
-      let s = dt.toISOString().slice(0,10);
-      document.querySelector('input[type=date]').value = s;
-    });
-  </script>
-</head>
-<body>
-<header>
-  <h1>📝 Tagesprotokoll</h1>
-</header>
-<form method="post">
-  <div class="row" style="margin-bottom:14px;">
-    <label style="flex:2;">Datum
-      <input type="date" name="date" required>
-    </label>
-    <div class="checkbox-row" style="flex:3;">
-      <div class="checkbox-wrapper">
-        <input type="checkbox" name="workday" value="1" id="workday">
-        <label for="workday">Arbeitstag</label>
-      </div>
-      <div class="checkbox-wrapper">
-        <input type="checkbox" name="cheat_day" value="1" id="cheat_day">
-        <label for="cheat_day">Cheat Day</label>
-      </div>
-      <div class="checkbox-wrapper">
-        <input type="checkbox" name="sport" value="1" id="sport">
-        <label for="sport">Sport gemacht</label>
-      </div>
-    </div>
-  </div>
-  <label>Gewicht (kg)
-    <input type="number" name="weight_kg" step="0.1" inputmode="decimal">
-  </label>
-
-  <!-- Mahlzeitenblöcke -->
-  <fieldset class="category-block">
-    <legend>Was habe ich heute gefrühstückt?</legend>
-    <input type="text" name="breakfast_food" placeholder="z.B. Brot mit Ei und Kräutern">
-    <div class="portion-btn-group" style="margin-bottom:9px;">
-      <input type="hidden" name="breakfast_portion">
-      <button type="button" class="portion-btn" data-value="viel">Viel</button>
-      <button type="button" class="portion-btn" data-value="mittel">Mittel</button>
-      <button type="button" class="portion-btn" data-value="wenig">Kleine Portion</button>
-    </div>
-    <div class="ampel-row">
-      <input type="hidden" name="breakfast_ampel">
-      <button type="button" class="ampel-btn gruen" data-value="gruen" title="Gute Mahlzeit">🟢</button>
-      <button type="button" class="ampel-btn gelb"  data-value="gelb"  title="Durchschnittlich">🟡</button>
-      <button type="button" class="ampel-btn rot"   data-value="rot"   title="Schlecht">🔴</button>
-    </div>
-  </fieldset>
-
-  <fieldset class="category-block">
-    <legend>Was habe ich heute zum Mittag gegessen?</legend>
-    <input type="text" name="lunch_food" placeholder="z.B. Gemüsepfanne mit Reis">
-    <div class="portion-btn-group">
-      <input type="hidden" name="lunch_portion">
-      <button type="button" class="portion-btn" data-value="viel">Viel</button>
-      <button type="button" class="portion-btn" data-value="mittel">Mittel</button>
-      <button type="button" class="portion-btn" data-value="wenig">Kleine Portion</button>
-    </div>
-    <div class="ampel-row">
-      <input type="hidden" name="lunch_ampel">
-      <button type="button" class="ampel-btn gruen" data-value="gruen" title="Gute Mahlzeit">🟢</button>
-      <button type="button" class="ampel-btn gelb"  data-value="gelb"  title="Durchschnittlich">🟡</button>
-      <button type="button" class="ampel-btn rot"   data-value="rot"   title="Schlecht">🔴</button>
-    </div>
-  </fieldset>
-
-  <fieldset class="category-block">
-    <legend>Was habe ich heute zum Abend gegessen?</legend>
-    <input type="text" name="dinner_food" placeholder="z.B. Salat mit Pute">
-    <div class="portion-btn-group">
-      <input type="hidden" name="dinner_portion">
-      <button type="button" class="portion-btn" data-value="viel">Viel</button>
-      <button type="button" class="portion-btn" data-value="mittel">Mittel</button>
-      <button type="button" class="portion-btn" data-value="wenig">Kleine Portion</button>
-    </div>
-    <div class="ampel-row">
-      <input type="hidden" name="dinner_ampel">
-      <button type="button" class="ampel-btn gruen" data-value="gruen" title="Gute Mahlzeit">🟢</button>
-      <button type="button" class="ampel-btn gelb"  data-value="gelb"  title="Durchschnittlich">🟡</button>
-      <button type="button" class="ampel-btn rot"   data-value="rot"   title="Schlecht">🔴</button>
-    </div>
-  </fieldset>
-
-  <fieldset class="category-block">
-    <legend>Was habe ich heute gesnackt?</legend>
-    <input type="text" name="snack_food" placeholder="z.B. Fruchtjoghurt mit Nüssen">
-    <div class="portion-btn-group">
-      <input type="hidden" name="snack_portion">
-      <button type="button" class="portion-btn" data-value="viel">Viel</button>
-      <button type="button" class="portion-btn" data-value="mittel">Mittel</button>
-      <button type="button" class="portion-btn" data-value="wenig">Kleine Portion</button>
-    </div>
-    <div class="ampel-row">
-      <input type="hidden" name="snack_ampel">
-      <button type="button" class="ampel-btn gruen" data-value="gruen" title="Gute Mahlzeit">🟢</button>
-      <button type="button" class="ampel-btn gelb"  data-value="gelb"  title="Durchschnittlich">🟡</button>
-      <button type="button" class="ampel-btn rot"   data-value="rot"   title="Schlecht">🔴</button>
-    </div>
-  </fieldset>
-
-  <fieldset class="category-block">
-    <legend>Was habe ich heute getrunken?</legend>
-    <input type="text" name="drink_food" placeholder="z.B. Wasser, Apfelschorle, Kaffee">
-    <div class="portion-btn-group">
-      <input type="hidden" name="drink_portion">
-      <button type="button" class="portion-btn" data-value="viel">Viel</button>
-      <button type="button" class="portion-btn" data-value="mittel">Mittel</button>
-      <button type="button" class="portion-btn" data-value="wenig">Kleine Portion</button>
-    </div>
-    <div class="ampel-row">
-      <input type="hidden" name="drink_ampel">
-      <button type="button" class="ampel-btn gruen" data-value="gruen" title="Gutes Getränk">🟢</button>
-      <button type="button" class="ampel-btn gelb"  data-value="gelb"  title="Durchschnittlich">🟡</button>
-      <button type="button" class="ampel-btn rot"   data-value="rot"   title="Schlecht">🔴</button>
-    </div>
-  </fieldset>
-
-  <fieldset>
-    <label>Mein Gesamtgefühl heute</label>
-    <div class="ampel-row">
-      <input type="hidden" name="mood">
-      <button type="button" class="ampel-btn gruen" data-value="gruen" title="Super!">😃</button>
-      <button type="button" class="ampel-btn gelb"  data-value="gelb" title="Okay">😐</button>
-      <button type="button" class="ampel-btn rot"   data-value="rot" title="Schlecht">😞</button>
-    </div>
-    <label>So habe ich geschlafen</label>
-    <div class="ampel-row">
-      <input type="hidden" name="sleep">
-      <button type="button" class="ampel-btn gruen" data-value="gruen" title="Erholt">😴</button>
-      <button type="button" class="ampel-btn gelb"  data-value="gelb" title="Na ja">😑</button>
-      <button type="button" class="ampel-btn rot"   data-value="rot" title="Schlecht">😩</button>
-    </div>
-  </fieldset>
-  <fieldset class="inline-checkbox">
-    <label><input type="checkbox" name="breath_ex" value="1">Atemübung</label>
-    <label><input type="checkbox" name="ab_massage" value="1">Bauchmassage</label>
-    <label><input type="checkbox" name="gratitude" value="1">Dankbarkeit</label>
-  </fieldset>
-  <label>Notizen
-    <textarea name="notes" rows="2" placeholder="Freitext, Beobachtungen, Sonstiges"></textarea>
-  </label>
-  <button type="submit">🌟 Speichern</button>
-</form>
-</body>
+    </script>
+  </body>
 </html>
