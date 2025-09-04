@@ -1,421 +1,284 @@
 <!DOCTYPE html>
 <html lang="de">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tagesprotokoll</title>
-    <style>
-      .switch {
-        position: relative;
-        display: inline-block;
-        width: 47px;
-        height: 28px;
-      }
-      .switch input {
-        display: none;
-      }
-      .slider {
-        position: absolute;
-        cursor: pointer;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background-color: #eaf0fa;
-        transition: 0.4s;
-        border-radius: 28px;
-        box-shadow: 0 1px 6px #22327315;
-      }
-      .slider:before {
-        content: "";
-        position: absolute;
-        height: 22px;
-        width: 22px;
-        left: 3px;
-        bottom: 3px;
-        background-color: #dffbf5;
-        transition: 0.4s;
-        border-radius: 50%;
-        box-shadow: 0 2px 6px #0001;
-      }
-      input:checked + .slider {
-        background-color: #50cc7f;
-      }
-      input:checked + .slider:before {
-        transform: translateX(19px);
-        background: #4976cf;
-      }
-
-      .container {
-        max-width: 480px;
-        margin: 20px auto;
-        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-        background-color: #f8f9fa;
-        padding: 20px;
-        border-radius: 10px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      }
-      .group {
-        background: #f5f8fe;
-        border-radius: 13px;
-        padding: 14px 12px;
-        box-shadow: 0 0.5px 3px #22327312;
-        margin-bottom: 14px;
-        display: flex;
-        flex-wrap: wrap;
-        align-items: end;
-        gap: 12px;
-      }
-      .col {
-        flex: 1 1 120px;
-        min-width: 120px;
-      }
-      .status {
-        background: #eaf0fa;
-        border-radius: 12px;
-        padding: 10px 8px;
-        margin-bottom: 18px;
-        display: flex;
-        gap: 14px;
-        justify-content: space-around;
-        align-items: center;
-        box-shadow: 0 0.5px 3px #22327311;
-      }
-      .status .box {
-        text-align: center;
-      }
-      .status .box span {
-        display: block;
-        font-size: 0.97em;
-        margin-bottom: 6px;
-        color: #37517e;
-      }
-
-      section {
-        background-color: white;
-        padding: 15px 20px;
-        border-radius: 10px;
-        margin-bottom: 15px;
-        box-shadow: 0 1px 6px #22327310;
-      }
-      label {
-        display: block;
-        margin-top: 10px;
-        font-weight: 600;
-        color: #37517e;
-      }
-      input[type="text"],
-      input[type="number"],
-      input[type="date"],
-      select {
-        width: 100%;
-        padding: 10px 9px;
-        margin-top: 6px;
-        border-radius: 8px;
-        border: 1.2px solid #ccd6f6;
-        background: #f8fafd;
-        font-size: 1.06em;
-        box-sizing: border-box;
-      }
-
-      input[type="range"] {
-        width: 100%;
-        -webkit-appearance: none;
-        height: 18px;
-        border-radius: 12px;
-        background: linear-gradient(
-          to right,
-          #50cc7f 0%,
-          #50cc7f 30%,
-          #ffd660 31%,
-          #ffd660 79%,
-          #ff5e62 80%,
-          #ff5e62 100%
-        );
-        outline: none;
-        position: relative;
-        z-index: 2;
-      }
-      input[type="range"]::-webkit-slider-thumb {
-        -webkit-appearance: none;
-        height: 32px;
-        width: 32px;
-        border-radius: 50%;
-        background: #4976cf;
-        cursor: pointer;
-        transition: background 0.14s, scale 0.1s;
-        border: 3px solid #fff;
-        margin-top: -8px;
-        box-shadow: 0 2.5px 9px #0002;
-      }
-      input[type="range"]:focus::-webkit-slider-thumb {
-        background: #ffd660;
-      }
-      input[type="range"].danger::-webkit-slider-thumb {
-        background: #ff5e62;
-      }
-      input[type="range"]::-moz-range-thumb {
-        height: 32px;
-        width: 32px;
-        border-radius: 50%;
-        background: #4976cf;
-        cursor: pointer;
-        border: 3px solid #fff;
-      }
-
-      .portion {
-        margin: 18px 0 13px 0;
-      }
-      .portion .label {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 4px;
-      }
-      .portion .label div:last-child {
-        font-weight: 700;
-        color: #4976cf;
-      }
-      .portion .label .danger {
-        color: #ff5e62;
-      }
-      .ticks {
-        display: flex;
-        justify-content: space-between;
-        font-size: 0.9em;
-        color: #37517e99;
-        margin-top: 8px;
-      }
-
-      .reflect,
-      .health {
-        border-radius: 11px;
-        padding: 11px 8px 8px;
-        margin-top: 12px;
-      }
-      .reflect {
-        background: #eaf6e9;
-        border-left: 5px solid #50cc7f;
-      }
-      .health {
-        background: #fff5e0;
-        border-left: 5px solid #ffd660;
-      }
-      .q {
-        font-weight: 700;
-        margin-bottom: 8px;
-        color: #223273;
-      }
-      .lights {
-        display: flex;
-        gap: 13px;
-        align-items: center;
-        margin: 11px 0 9px 0;
-      }
-      .lamp {
-        width: 38px;
-        height: 38px;
-        border-radius: 50%;
-        border: 2.5px solid #eee;
-        background: #eee;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-size: 1.25em;
-        cursor: pointer;
-        box-shadow: 0 2px 7px #0002;
-        transition: all 0.13s;
-      }
-      .lamp.sel.green {
-        background: #50cc7f;
-        border-color: #50cc7f;
-      }
-      .lamp.sel.yellow {
-        background: #ffd660;
-        border-color: #ffd660;
-        color: #333;
-      }
-      .lamp.sel.red {
-        background: #ff5e62;
-        border-color: #ff5e62;
-      }
-
-      button[type="submit"] {
-        width: 100%;
-        padding: 15px 0;
-        font-size: 1.1em;
-        color: #fff;
-        background: linear-gradient(90deg, #4976cf, #ffd660);
-        border: none;
-        border-radius: 10px;
-        margin-top: 25px;
-        font-weight: 700;
-        letter-spacing: 0.04em;
-        box-shadow: 0 2px 7px #0001;
-        cursor: pointer;
-        transition: background 0.14s;
-      }
-      button[type="submit"]:hover {
-        background: linear-gradient(90deg, #3a61ad, #ddb742);
-      }
-    </style>
-  </head>
-  <body>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/components.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/swiper.css') }}">
+</head>
+<body>
     <div class="container">
-      <header><h1>📝 Tagesprotokoll</h1></header>
-      <form method="post" action="/daily">
-        <div class="group">
-          <div class="col">
-            <label for="name">👤 Name</label>
-            <select id="name" name="name" required>
-              <option value="">Bitte wählen…</option>
-              <option value="Tobias">Tobias</option>
-              <option value="Max">Max</option>
-              <option value="Felix">Felix</option>
-            </select>
-          </div>
-          <div class="col">
-            <label for="today">📅 Datum</label>
-            <input type="date" id="today" name="date" required />
-          </div>
-          <div class="col">
-            <label for="weight_kg">⚖️ Gewicht (kg)</label>
-            <input
-              type="number"
-              id="weight_kg"
-              name="weight_kg"
-              step="0.1"
-              inputmode="decimal"
-            />
-          </div>
+        <!-- Progress Bar -->
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+        
+        <!-- Step Indicator -->
+        <div class="step-indicator">
+            <div class="step active" data-step="0">1</div>
+            <div class="step" data-step="1">2</div>
+            <div class="step" data-step="2">3</div>
+            <div class="step" data-step="3">4</div>
+            <div class="step" data-step="4">5</div>
         </div>
 
-        <div class="status">
-          <div class="box">
-            <span>Arbeitstag</span>
-            <label class="switch">
-              <input type="checkbox" name="workday" id="workday" />
-              <span class="slider"></span>
-            </label>
-          </div>
-          <div class="box">
-            <span>Cheat Day</span>
-            <label class="switch">
-              <input type="checkbox" name="cheat_day" id="cheat_day" />
-              <span class="slider"></span>
-            </label>
-          </div>
-          <div class="box">
-            <span>Sport gemacht</span>
-            <label class="switch">
-              <input type="checkbox" name="sport" id="sport" />
-              <span class="slider"></span>
-            </label>
-          </div>
+        <form method="post" action="/daily" id="dailyForm">
+            <div class="form-steps" id="formSteps">
+                
+                <!-- Step 1: Persönliche Daten -->
+                <section class="form-step active" data-step="0">
+                    <header class="step-header">
+                        <h2>👋 Hallo!</h2>
+                        <p>Lass uns deinen Tag starten</p>
+                    </header>
+                    
+                    <div class="form-group">
+                        <label for="name">👤 Name</label>
+                        <select id="name" name="name" required>
+                            <option value="">Bitte wählen…</option>
+                            <option value="Tobias">Tobias</option>
+                            <option value="Lisa">Lisa</option>
+                            <option value="Felix">Felix</option>
+                        </select>
+                        
+                        <div class="form-row">
+                            <div>
+                                <label for="date">📅 Datum</label>
+                                <input type="date" id="date" name="date" required>
+                            </div>
+                            <div>
+                                <label for="weight">⚖️ Gewicht (kg)</label>
+                                <input type="number" id="weight" name="weight" step="0.1" inputmode="decimal">
+                            </div>
+                        </div>
+
+                        <div class="toggle-group">
+                            <div class="toggle-item">
+                                <label for="workday">Arbeitstag</label>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="workday" name="workday">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                            <div class="toggle-item">
+                                <label for="cheatday">Cheat Day</label>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="cheatday" name="cheatday">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                            <div class="toggle-item">
+                                <label for="sport">Sport</label>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="sport" name="sport">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Step 2: Frühstück -->
+                <section class="form-step" data-step="1">
+                    <header class="step-header">
+                        <h2>🥣 Frühstück</h2>
+                        <p>Was hast du heute gefrühstückt?</p>
+                    </header>
+                    
+                    <div class="meal-card">
+                        <input type="text" name="breakfast_food" placeholder="z.B. Haferflocken mit Früchten">
+                        
+                        <div class="portion-control">
+                            <label class="portion-label">Portionsgröße: <span id="breakfast-portion-text">kleine Portion</span></label>
+                            <input type="range" id="breakfast-portion-slider" name="breakfast_portion" min="0" max="100" value="30">
+                            <div class="portion-labels">
+                                <span>Klein</span>
+                                <span>Mittel</span>
+                                <span>Groß</span>
+                            </div>
+                        </div>
+
+                        <div class="ampel-section">
+                            <div class="ampel-group" id="breakfastReflectionGroup" data-input="breakfast_reflection">
+                                <h4>Wie gut tat mir diese Mahlzeit?</h4>
+                                <div class="ampel-buttons">
+                                    <div class="ampel-button green" data-value="green">🟢</div>
+                                    <div class="ampel-button yellow" data-value="yellow">🟡</div>
+                                    <div class="ampel-button red" data-value="red">🔴</div>
+                                </div>
+                                <input type="hidden" id="breakfast_reflection" name="breakfast_reflection">
+                            </div>
+                            
+                            <div class="ampel-group" id="breakfastHealthGroup" data-input="breakfast_health">
+                                <h4>Wie gesund war diese Mahlzeit?</h4>
+                                <div class="ampel-buttons">
+                                    <div class="ampel-button green" data-value="green">🟢</div>
+                                    <div class="ampel-button yellow" data-value="yellow">🟡</div>
+                                    <div class="ampel-button red" data-value="red">🔴</div>
+                                </div>
+                                <input type="hidden" id="breakfast_health" name="breakfast_health">
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Step 3: Mittagessen -->
+                <section class="form-step" data-step="2">
+                    <header class="step-header">
+                        <h2>🍝 Mittagessen</h2>
+                        <p>Was gab es heute zu Mittag?</p>
+                    </header>
+                    
+                    <div class="meal-card">
+                        <input type="text" name="lunch_food" placeholder="z.B. Gemüsepfanne mit Reis">
+                        
+                        <div class="portion-control">
+                            <label class="portion-label">Portionsgröße: <span id="lunch-portion-text">kleine Portion</span></label>
+                            <input type="range" id="lunch-portion-slider" name="lunch_portion" min="0" max="100" value="30">
+                            <div class="portion-labels">
+                                <span>Klein</span>
+                                <span>Mittel</span>
+                                <span>Groß</span>
+                            </div>
+                        </div>
+
+                        <div class="ampel-section">
+                            <div class="ampel-group" id="lunchReflectionGroup" data-input="lunch_reflection">
+                                <h4>Wie gut tat mir diese Mahlzeit?</h4>
+                                <div class="ampel-buttons">
+                                    <div class="ampel-button green" data-value="green">🟢</div>
+                                    <div class="ampel-button yellow" data-value="yellow">🟡</div>
+                                    <div class="ampel-button red" data-value="red">🔴</div>
+                                </div>
+                                <input type="hidden" id="lunch_reflection" name="lunch_reflection">
+                            </div>
+                            
+                            <div class="ampel-group" id="lunchHealthGroup" data-input="lunch_health">
+                                <h4>Wie gesund war diese Mahlzeit?</h4>
+                                <div class="ampel-buttons">
+                                    <div class="ampel-button green" data-value="green">🟢</div>
+                                    <div class="ampel-button yellow" data-value="yellow">🟡</div>
+                                    <div class="ampel-button red" data-value="red">🔴</div>
+                                </div>
+                                <input type="hidden" id="lunch_health" name="lunch_health">
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Step 4: Abendessen -->
+                <section class="form-step" data-step="3">
+                    <header class="step-header">
+                        <h2>🍽️ Abendessen</h2>
+                        <p>Was hast du heute Abend gegessen?</p>
+                    </header>
+                    
+                    <div class="meal-card">
+                        <input type="text" name="dinner_food" placeholder="z.B. Salat mit Pute">
+                        
+                        <div class="portion-control">
+                            <label class="portion-label">Portionsgröße: <span id="dinner-portion-text">kleine Portion</span></label>
+                            <input type="range" id="dinner-portion-slider" name="dinner_portion" min="0" max="100" value="30">
+                            <div class="portion-labels">
+                                <span>Klein</span>
+                                <span>Mittel</span>
+                                <span>Groß</span>
+                            </div>
+                        </div>
+
+                        <div class="ampel-section">
+                            <div class="ampel-group" id="dinnerReflectionGroup" data-input="dinner_reflection">
+                                <h4>Wie gut tat mir diese Mahlzeit?</h4>
+                                <div class="ampel-buttons">
+                                    <div class="ampel-button green" data-value="green">🟢</div>
+                                    <div class="ampel-button yellow" data-value="yellow">🟡</div>
+                                    <div class="ampel-button red" data-value="red">🔴</div>
+                                </div>
+                                <input type="hidden" id="dinner_reflection" name="dinner_reflection">
+                            </div>
+                            
+                            <div class="ampel-group" id="dinnerHealthGroup" data-input="dinner_health">
+                                <h4>Wie gesund war diese Mahlzeit?</h4>
+                                <div class="ampel-buttons">
+                                    <div class="ampel-button green" data-value="green">🟢</div>
+                                    <div class="ampel-button yellow" data-value="yellow">🟡</div>
+                                    <div class="ampel-button red" data-value="red">🔴</div>
+                                </div>
+                                <input type="hidden" id="dinner_health" name="dinner_health">
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Step 5: Snacks & Reflexion -->
+                <section class="form-step" data-step="4">
+                    <header class="step-header">
+                        <h2>🍎 Snacks & Reflexion</h2>
+                        <p>Was hast du zwischendurch genascht?</p>
+                    </header>
+                    
+                    <div class="meal-card">
+                        <h4>Snacks</h4>
+                        <input type="text" name="snack_food" placeholder="z.B. Apfel, Nüsse, Joghurt">
+                        
+                        <div class="portion-control">
+                            <label class="portion-label">Portionsgröße: <span id="snack-portion-text">kleine Portion</span></label>
+                            <input type="range" id="snack-portion-slider" name="snack_portion" min="0" max="100" value="30">
+                            <div class="portion-labels">
+                                <span>Klein</span>
+                                <span>Mittel</span>
+                                <span>Groß</span>
+                            </div>
+                        </div>
+
+                        <div class="ampel-section">
+                            <div class="ampel-group" id="snackReflectionGroup" data-input="snack_reflection">
+                                <h4>Wie gut taten mir die Snacks?</h4>
+                                <div class="ampel-buttons">
+                                    <div class="ampel-button green" data-value="green">🟢</div>
+                                    <div class="ampel-button yellow" data-value="yellow">🟡</div>
+                                    <div class="ampel-button red" data-value="red">🔴</div>
+                                </div>
+                                <input type="hidden" id="snack_reflection" name="snack_reflection">
+                            </div>
+                            
+                            <div class="ampel-group" id="snackHealthGroup" data-input="snack_health">
+                                <h4>Wie gesund waren die Snacks?</h4>
+                                <div class="ampel-buttons">
+                                    <div class="ampel-button green" data-value="green">🟢</div>
+                                    <div class="ampel-button yellow" data-value="yellow">🟡</div>
+                                    <div class="ampel-button red" data-value="red">🔴</div>
+                                </div>
+                                <input type="hidden" id="snack_health" name="snack_health">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="notes">💭 Notizen zum Tag</label>
+                        <textarea id="notes" name="notes" rows="3" placeholder="Wie war dein Tag? Was möchtest du festhalten?"></textarea>
+                    </div>
+
+                    <button type="submit" class="button-primary">🌟 Tag speichern</button>
+                </section>
+            </div>
+        </form>
+
+        <!-- Navigation -->
+        <div class="navigation-buttons">
+            <button type="button" id="prevBtn" class="nav-btn" style="display: none;">← Zurück</button>
+            <button type="button" id="nextBtn" class="nav-btn">Weiter →</button>
         </div>
 
-        <section>
-          <legend>Was habe ich heute gefrühstückt?</legend>
-          <input
-            type="text"
-            name="breakfast_food"
-            placeholder="z.B. Brot mit Ei und Kräutern"
-          />
-          <div class="portion">
-            <div class="label">
-              <div>Portionsgröße</div>
-              <div id="b_portion_text">kleine Portion</div>
-            </div>
-            <input
-              type="range"
-              min="0"
-              max="100"
-              value="30"
-              id="b_portion"
-              name="breakfast_portion"
-            />
-            <div class="ticks">
-              <span>KLEIN</span><span>MITTEL</span><span>VIEL</span>
-            </div>
-          </div>
-          <div class="reflect">
-            <div class="q">Wie gut tat mir diese Mahlzeit?</div>
-            <div class="lights" id="b_reflect_group">
-              <input
-                type="hidden"
-                name="breakfast_reflection"
-                id="b_reflect_val"
-              />
-              <div class="lamp green" data-val="green">🟢</div>
-              <div class="lamp yellow" data-val="yellow">🟡</div>
-              <div class="lamp red" data-val="red">🔴</div>
-            </div>
-          </div>
-          <div class="health">
-            <div class="q">Wie gesund war diese Mahlzeit?</div>
-            <div class="lights" id="b_health_group">
-              <input type="hidden" name="breakfast_health" id="b_health_val" />
-              <div class="lamp green" data-val="green">🟢</div>
-              <div class="lamp yellow" data-val="yellow">🟡</div>
-              <div class="lamp red" data-val="red">🔴</div>
-            </div>
-          </div>
-        </section>
-
-        <button type="submit">🌟 Speichern</button>
-      </form>
+        <!-- Swipe Hint -->
+        <div class="swipe-hint">
+            <p>👆 Wische oder tippe zum Navigieren</p>
+        </div>
     </div>
 
-    <script>
-      document.addEventListener("DOMContentLoaded", function () {
-        const d = document.getElementById("today");
-        if (d && !d.value) d.value = new Date().toISOString().slice(0, 10);
-
-        const slider = document.getElementById("b_portion");
-        const label = document.getElementById("b_portion_text");
-        function updatePortion() {
-          const v = +slider.value;
-          if (v < 33) {
-            label.textContent = "kleine Portion";
-            slider.classList.remove("danger");
-            label.classList.remove("danger");
-          } else if (v < 80) {
-            label.textContent = "mittlere Portion";
-            slider.classList.remove("danger");
-            label.classList.remove("danger");
-          } else {
-            label.textContent = "zu viel 😬";
-            slider.classList.add("danger");
-            label.classList.add("danger");
-          }
-        }
-        slider.addEventListener("input", updatePortion);
-        updatePortion();
-
-        function setupLights(groupId, hiddenId) {
-          const g = document.getElementById(groupId);
-          const out = document.getElementById(hiddenId);
-          g.querySelectorAll(".lamp").forEach((el) => {
-            el.addEventListener("click", () => {
-              g.querySelectorAll(".lamp").forEach((x) =>
-                x.classList.remove("sel")
-              );
-              el.classList.add(
-                "sel",
-                el.classList.contains("green")
-                  ? "green"
-                  : el.classList.contains("yellow")
-                  ? "yellow"
-                  : "red"
-              );
-              out.value = el.dataset.val;
-            });
-          });
-        }
-        setupLights("b_reflect_group", "b_reflect_val");
-        setupLights("b_health_group", "b_health_val");
-      });
-    </script>
-  </body>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/swiper.js') }}"></script>
+</body>
 </html>

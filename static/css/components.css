@@ -1,0 +1,100 @@
+/* Kompakte Ampel-Sektion */
+.ampel-section {
+    margin-top: 1rem;
+    background: #f8faff;
+    border-radius: 0.75rem;
+    padding: 0.75rem;
+}
+
+.ampel-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+    gap: 0.5rem;
+}
+
+.ampel-row:last-child {
+    margin-bottom: 0;
+}
+
+.ampel-question {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-color);
+    flex: 1;
+    margin: 0;
+}
+
+.ampel-buttons {
+    display: flex;
+    gap: 0.25rem;
+    flex-shrink: 0;
+}
+
+.ampel-button {
+    background-color: #eee;
+    border-radius: 50%;
+    width: 2.5rem;
+    height: 2.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.2rem;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all 0.2s ease-in-out;
+}
+
+.ampel-button.active {
+    background-color: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+    transform: scale(1.05);
+}
+
+/* Kompakte Meal Card */
+.meal-card {
+    background-color: #f0f5ff;
+    border-radius: 0.75rem;
+    padding: 1rem;
+    margin: 1rem 0;
+}
+
+.portion-control {
+    margin: 1rem 0 0.75rem 0;
+}
+
+.portion-label {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.25rem;
+    font-size: 0.9rem;
+}
+
+.portion-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    color: #666;
+    margin-top: 0.25rem;
+}
+
+/* Step Header kompakter */
+.step-header {
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.step-header h2 {
+    color: var(--primary-color);
+    font-size: 1.3rem;
+    margin-bottom: 0.25rem;
+    font-weight: 800;
+}
+
+.step-header p {
+    color: #666;
+    font-size: 0.9rem;
+    margin: 0;
+}

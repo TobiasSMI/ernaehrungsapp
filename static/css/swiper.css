@@ -1,0 +1,189 @@
+/* Swiper Styles */
+.progress-container {
+    width: 100%;
+    height: 4px;
+    background-color: #e0e7ff;
+    border-radius: 2px;
+    margin-bottom: 1rem;
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+    width: 20%;
+    border-radius: 2px;
+    transition: width 0.3s ease-in-out;
+}
+
+.step-indicator {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+}
+
+.step {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: #e0e7ff;
+    color: var(--text-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+}
+
+.step.active {
+    background-color: var(--primary-color);
+    color: white;
+    transform: scale(1.1);
+    box-shadow: 0 0 10px rgba(73, 124, 207, 0.3);
+}
+
+.step.completed {
+    background-color: var(--success-color);
+    color: white;
+}
+
+.form-steps {
+    position: relative;
+    overflow: hidden;
+    height: auto;
+    min-height: 400px;
+}
+
+.form-step {
+    display: none;
+    opacity: 0;
+    transform: translateX(100%);
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    animation-fill-mode: both;
+}
+
+.form-step.active {
+    display: block;
+    opacity: 1;
+    transform: translateX(0);
+    animation: slideInRight 0.4s ease-out;
+}
+
+.form-step.prev {
+    transform: translateX(-100%);
+    animation: slideOutLeft 0.4s ease-out;
+}
+
+.form-step.next {
+    transform: translateX(100%);
+    animation: slideOutRight 0.4s ease-out;
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideOutLeft {
+    from {
+        opacity: 1;
+        transform: translateX(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateX(-100%);
+    }
+}
+
+@keyframes slideOutRight {
+    from {
+        opacity: 1;
+        transform: translateX(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+}
+
+.step-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.step-header h2 {
+    color: var(--primary-color);
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    font-weight: 800;
+}
+
+.step-header p {
+    color: #666;
+    font-size: 1rem;
+    margin: 0;
+}
+
+.navigation-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 2rem;
+    gap: 1rem;
+}
+
+.nav-btn {
+    flex: 1;
+    padding: 0.75rem 1.5rem;
+    border: 2px solid var(--primary-color);
+    background-color: transparent;
+    color: var(--primary-color);
+    border-radius: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+}
+
+.nav-btn:hover {
+    background-color: var(--primary-color);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(73, 124, 207, 0.3);
+}
+
+.swipe-hint {
+    text-align: center;
+    margin-top: 1rem;
+    opacity: 0.7;
+    font-size: 0.85rem;
+    color: var(--text-color);
+}
+
+/* Touch Feedback */
+.form-steps.touching {
+    cursor: grabbing;
+}
+
+@media (max-width: 480px) {
+    .step-indicator {
+        gap: 0.3rem;
+    }
+    
+    .step {
+        width: 28px;
+        height: 28px;
+        font-size: 0.8rem;
+    }
+    
+    .navigation-buttons {
+        margin-top: 1rem;
+    }
+}
